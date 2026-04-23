@@ -5,44 +5,62 @@ export default function QuestionsPage() {
   const questions = getQuestions();
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">질문/답변</h1>
-        <Link
-          href="/ask"
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-        >
-          질문하기
-        </Link>
+    <div className="page-in safe-bottom">
+      {/* Top bar */}
+      <div className="top-bar">
+        <div style={{ width: 34 }} />
+        <div />
+        <div style={{ width: 34 }} />
       </div>
+
+      {/* Title */}
+      <div style={{ padding: "10px 20px 6px" }}>
+        <div className="label" style={{ marginBottom: 4 }}>Q&A</div>
+        <h1 className="serif-title" style={{ fontSize: 26, lineHeight: 1.25 }}>
+          질문과 답변
+        </h1>
+      </div>
+
+      <hr className="hr" />
+
       {questions.length === 0 ? (
-        <p className="text-gray-500">아직 질문이 없습니다.</p>
+        <div style={{ padding: "40px 20px", textAlign: "center", color: "var(--mute)" }}>
+          아직 질문이 없습니다.
+        </div>
       ) : (
-        <ul className="space-y-3">
-          {questions.map((q) => (
-            <li key={q.id} className="border rounded p-4">
-              <Link href={`/questions/${q.id}`} className="block group">
-                <div className="flex justify-between items-start gap-2">
-                  <h2 className="font-medium group-hover:underline flex-1">
-                    {q.question}
-                  </h2>
+        questions.map((q, i) => (
+          <div key={q.id}>
+            <Link
+              href={`/questions/${q.id}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div className="q-item">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                   <span
-                    className={`text-xs px-2 py-1 rounded shrink-0 ${
-                      q.answered
-                        ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
+                    className="label"
+                    style={{
+                      color: q.answered ? "var(--accent)" : "var(--mute)",
+                      letterSpacing: "0.12em",
+                    }}
                   >
                     {q.answered ? "답변완료" : "대기중"}
                   </span>
+                  <span className="num" style={{ fontSize: 11, color: "var(--mute)" }}>
+                    {q.date}
+                  </span>
                 </div>
-                <p className="text-sm text-gray-500 mt-1">
-                  {q.name} &middot; {q.date}
-                </p>
-              </Link>
-            </li>
-          ))}
-        </ul>
+                <div className="q-title">{q.question}</div>
+                <div className="q-meta">
+                  <span className="avatar" style={{ width: 18, height: 18, fontSize: 9 }}>
+                    {q.name[0]}
+                  </span>
+                  <span>{q.name}</span>
+                </div>
+              </div>
+            </Link>
+            {i < questions.length - 1 && <hr className="hr" />}
+          </div>
+        ))
       )}
     </div>
   );

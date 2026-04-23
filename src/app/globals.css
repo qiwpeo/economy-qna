@@ -1,26 +1,223 @@
-@import "tailwindcss";
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..700,0..100&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #F5EFE6;
+  --bg-elev: #FBF6EE;
+  --ink: #2A2724;
+  --ink-soft: #4A433D;
+  --mute: #8C847A;
+  --mute-2: #B8AFA3;
+  --line: rgba(42, 39, 36, 0.10);
+  --line-strong: rgba(42, 39, 36, 0.18);
+  --accent: #B8533A;
+  --accent-ink: #7A3624;
+  --radius: 14px;
+
+  --font-ko: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
+  --font-en: 'Fraunces', 'Pretendard Variable', serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ko);
+  font-size: 15px;
+  line-height: 1.65;
+  letter-spacing: -0.015em;
+  word-break: keep-all;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Typography ── */
+.num {
+  font-family: var(--font-en);
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 50;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+.label {
+  font-family: var(--font-en);
+  font-weight: 400;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.serif-title {
+  font-family: var(--font-ko);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.32;
+  color: var(--ink);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Hairline ── */
+.hr { height: 1px; background: var(--line); border: 0; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px; border: 0; cursor: pointer;
+  font-family: var(--font-ko); font-size: 14px;
+  padding: 10px 16px; border-radius: 999px;
+  background: var(--ink); color: var(--bg-elev);
+  transition: transform .15s ease;
+}
+.btn:active { transform: scale(.98); }
+.btn.accent { background: var(--accent); color: #FBF6EE; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line-strong); }
+
+/* ── Scrollbar hide ── */
+.scroll::-webkit-scrollbar { display: none; }
+.scroll { scrollbar-width: none; }
+
+/* ── Tab bar ── */
+.tabbar {
+  display: flex; justify-content: space-around;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  padding: 10px 0 calc(10px + env(safe-area-inset-bottom, 16px));
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 50;
+}
+.tab {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-family: var(--font-en); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--mute);
+  padding: 4px 10px; cursor: pointer; background: transparent; border: 0;
+  font-weight: 500; text-decoration: none;
+}
+.tab.on { color: var(--ink); }
+.tab .tab-dot {
+  width: 4px; height: 4px; border-radius: 999px;
+  background: var(--accent); opacity: 0; transition: opacity .2s;
+}
+.tab.on .tab-dot { opacity: 1; }
+
+/* ── Column card (home) ── */
+.column-card {
+  margin: 16px 20px;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 18px 16px;
+}
+.column-card .kicker {
+  font-family: var(--font-en); font-size: 10.5px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--accent); font-weight: 500;
+}
+.column-card h3 {
+  margin: 6px 0 6px; font-weight: 700;
+  font-size: 18px; line-height: 1.4; letter-spacing: -0.01em;
+}
+.column-card p { color: var(--ink-soft); font-size: 13.5px; line-height: 1.7; }
+
+/* ── Question item ── */
+.q-item { padding: 18px 20px; }
+.q-title {
+  font-weight: 600; font-size: 16.5px; line-height: 1.45;
+  letter-spacing: -0.02em; color: var(--ink);
+}
+.q-preview {
+  color: var(--ink-soft); font-size: 13.5px; line-height: 1.6; margin-top: 6px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.q-meta {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 10px; font-size: 11px; color: var(--mute);
+}
+.q-meta .dot {
+  width: 3px; height: 3px; border-radius: 999px; background: var(--mute-2);
+}
+
+/* ── Tag ── */
+.tag {
+  font-family: var(--font-en); font-size: 10.5px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--mute); font-weight: 500;
+}
+
+/* ── Top bar ── */
+.top-bar {
+  padding: calc(env(safe-area-inset-top, 12px) + 12px) 18px 4px;
+  display: flex; align-items: center; justify-content: space-between;
+  min-height: 32px;
+}
+.icon-btn {
+  width: 34px; height: 34px; border-radius: 999px;
+  border: 1px solid var(--line); background: transparent;
+  color: var(--ink); cursor: pointer;
+  display: grid; place-items: center;
+}
+
+/* ── Answer section ── */
+.answer { padding: 16px 20px 18px; border-top: 1px solid var(--line); }
+.answer.best {
+  background: linear-gradient(180deg, rgba(184,83,58,0.04), rgba(184,83,58,0));
+}
+.best-ribbon {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-en); font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--accent); font-weight: 500;
+  margin-bottom: 8px;
+}
+.ans-body { font-size: 14px; line-height: 1.8; color: var(--ink); }
+
+/* ── Drop cap ── */
+.dropcap::first-letter {
+  font-family: var(--font-en); font-weight: 500;
+  font-size: 46px; line-height: 0.9; float: left;
+  padding: 6px 8px 0 0; color: var(--accent);
+}
+
+/* ── Big number ── */
+.big-num {
+  font-family: var(--font-en); font-weight: 300;
+  font-variation-settings: "SOFT" 30;
+  font-size: 44px; line-height: 1; letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Page animation ── */
+.page-in {
+  animation: page-in .32s cubic-bezier(.2,.7,.2,1) both;
+}
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Form ── */
+.form-input {
+  width: 100%; border: 1px solid var(--line-strong);
+  background: var(--bg-elev); border-radius: 999px;
+  padding: 12px 16px; font-family: var(--font-ko);
+  font-size: 14px; color: var(--ink); outline: none;
+}
+.form-input:focus { border-color: var(--accent); }
+.form-textarea {
+  width: 100%; border: 1px solid var(--line-strong);
+  background: var(--bg-elev); border-radius: var(--radius);
+  padding: 14px 16px; font-family: var(--font-ko);
+  font-size: 14px; color: var(--ink); outline: none;
+  resize: vertical; min-height: 140px; line-height: 1.8;
+}
+.form-textarea:focus { border-color: var(--accent); }
+
+/* ── Avatar ── */
+.avatar {
+  width: 22px; height: 22px; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-en); font-size: 11px; font-weight: 500;
+  color: var(--bg-elev); flex-shrink: 0;
+  background: var(--accent);
+}
+
+/* ── Safe area bottom padding for scrollable content ── */
+.safe-bottom {
+  padding-bottom: calc(80px + env(safe-area-inset-bottom, 16px));
 }
