@@ -1,19 +1,41 @@
 import Link from "next/link";
-import { getQuestions } from "@/lib/content";
+import matter from "gray-matter";
+import { fetchQuestionsFromGitHub } from "@/lib/github";
 
-export default function QuestionsPage() {
-  const questions = getQuestions();
+export const dynamic = "force-dynamic";
+
+interface Question {
+  id: string;
+  name: string;
+  question: string;
+  date: string;
+  answered: boolean;
+}
+
+export default async function QuestionsPage() {
+  const files = await fetchQuestionsFromGitHub();
+
+  const questions: Question[] = files
+    .map(({ filename, content }) => {
+      const { data } = matter(content);
+      return {
+        id: filename.replace(/\.md$/, ""),
+        name: data.name ?? "",
+        question: data.question ?? "",
+        date: data.date ?? "",
+        answered: data.answered ?? false,
+      };
+    })
+    .sort((a, b) => (a.date > b.date ? -1 : 1));
 
   return (
     <div className="page-in safe-bottom">
-      {/* Top bar */}
       <div className="top-bar">
         <div style={{ width: 34 }} />
         <div />
         <div style={{ width: 34 }} />
       </div>
 
-      {/* Title */}
       <div style={{ padding: "10px 20px 6px" }}>
         <div className="label" style={{ marginBottom: 4 }}>Q&A</div>
         <h1 className="serif-title" style={{ fontSize: 26, lineHeight: 1.25 }}>
