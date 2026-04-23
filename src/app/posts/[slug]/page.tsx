@@ -6,6 +6,64 @@ export function generateStaticParams() {
   return getPosts().map((post) => ({ slug: post.slug }));
 }
 
+function renderBlock(block: string, index: number) {
+  // Heading
+  if (block.startsWith("## ")) {
+    return (
+      <h2 key={index} style={{
+        fontSize: 18, fontWeight: 700, letterSpacing: "-0.02em",
+        margin: "28px 0 12px", lineHeight: 1.4,
+      }}>
+        {block.slice(3)}
+      </h2>
+    );
+  }
+
+  // Image
+  const imgMatch = block.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+  if (imgMatch) {
+    return (
+      <div key={index} style={{
+        margin: "20px -8px", padding: "16px 0",
+        borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)",
+        overflow: "auto",
+      }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={imgMatch[2]}
+          alt={imgMatch[1]}
+          style={{ width: "100%", height: "auto", display: "block" }}
+        />
+      </div>
+    );
+  }
+
+  // List
+  if (block.startsWith("- ")) {
+    const items = block.split("\n").filter((l) => l.startsWith("- "));
+    return (
+      <ul key={index} style={{ margin: "8px 0 14px", paddingLeft: 20 }}>
+        {items.map((item, j) => (
+          <li key={j} style={{ margin: "6px 0", lineHeight: 1.7 }}
+            dangerouslySetInnerHTML={{ __html: inlineFormat(item.slice(2)) }}
+          />
+        ))}
+      </ul>
+    );
+  }
+
+  // Paragraph
+  return (
+    <p key={index} style={{ margin: "0 0 14px" }}
+      dangerouslySetInnerHTML={{ __html: inlineFormat(block) }}
+    />
+  );
+}
+
+function inlineFormat(text: string): string {
+  return text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+}
+
 export default async function PostPage({
   params,
 }: {
@@ -15,14 +73,13 @@ export default async function PostPage({
   const post = getPost(slug);
   if (!post) notFound();
 
-  const paragraphs = post.content
+  const blocks = post.content
     .split("\n\n")
     .map((p) => p.trim())
     .filter(Boolean);
 
   return (
     <div className="page-in safe-bottom">
-      {/* Top bar */}
       <div className="top-bar">
         <Link href="/" className="icon-btn" style={{ textDecoration: "none", color: "var(--ink)" }}>
           <svg viewBox="0 0 20 20" width={18} height={18} fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
@@ -33,7 +90,6 @@ export default async function PostPage({
         <div style={{ width: 34 }} />
       </div>
 
-      {/* Header */}
       <div style={{ padding: "12px 24px 8px" }}>
         <div className="num label" style={{ color: "var(--accent)", letterSpacing: "0.18em" }}>
           {post.date}
@@ -45,7 +101,6 @@ export default async function PostPage({
 
       <hr className="hr" style={{ margin: "10px 24px" }} />
 
-      {/* Body */}
       <div style={{
         padding: "12px 24px 8px",
         fontSize: 15,
@@ -53,9 +108,7 @@ export default async function PostPage({
         color: "var(--ink)",
       }}>
         <div className="dropcap">
-          {paragraphs.map((p, i) => (
-            <p key={i} style={{ margin: "0 0 14px" }}>{p}</p>
-          ))}
+          {blocks.map((block, i) => renderBlock(block, i))}
         </div>
       </div>
     </div>
