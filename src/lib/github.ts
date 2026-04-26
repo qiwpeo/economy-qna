@@ -89,3 +89,47 @@ export async function fetchQuestionFileFromGitHub(
   const data = await res.json();
   return Buffer.from(data.content, "base64").toString("utf-8");
 }
+
+export async function updateFileOnGitHub({
+  path,
+  content,
+  message,
+}: CommitFileParams) {
+  const [owner, repo] = GITHUB_REPO.split("/");
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+  // Get current file SHA (required for updates)
+  const current = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      Accept: "application/vnd.github+json",
+    },
+  });
+
+  if (!current.ok) {
+    throw new Error(`File not found: ${path}`);
+  }
+
+  const { sha } = await current.json();
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      "Content-Type": "application/json",
+      Accept: "application/vnd.github+json",
+    },
+    body: JSON.stringify({
+      message,
+      content: Buffer.from(content).toString("base64"),
+      sha,
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`GitHub API error (${res.status}): ${body}`);
+  }
+
+  return res.json();
+}

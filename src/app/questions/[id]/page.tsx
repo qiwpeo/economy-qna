@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import matter from "gray-matter";
 import { fetchQuestionFileFromGitHub } from "@/lib/github";
+import AnswerForm from "@/components/AnswerForm";
 
 export const dynamic = "force-dynamic";
 
@@ -76,6 +77,7 @@ export default async function QuestionPage({
           <div style={{ color: "var(--mute)", fontSize: 13.5, textAlign: "center", padding: "20px 0" }}>
             아직 답변이 등록되지 않았습니다.
           </div>
+          <AnswerForm questionId={id} />
         </div>
       )}
     </div>
