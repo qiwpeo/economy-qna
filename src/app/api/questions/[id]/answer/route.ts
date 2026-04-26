@@ -2,22 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { fetchQuestionFileFromGitHub, updateFileOnGitHub } from "@/lib/github";
 import matter from "gray-matter";
 
-const ADMIN_KEY = process.env.ADMIN_KEY;
-
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const { answer, adminKey } = await req.json();
-
-    if (!ADMIN_KEY || adminKey !== ADMIN_KEY) {
-      return NextResponse.json(
-        { error: "권한이 없습니다." },
-        { status: 401 }
-      );
-    }
+    const { answer } = await req.json();
 
     if (!answer || typeof answer !== "string") {
       return NextResponse.json(
